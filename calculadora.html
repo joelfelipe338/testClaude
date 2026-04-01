@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #1a1a2e;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .calculadora {
+            background: #16213e;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .display {
+            background: #0f3460;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: right;
+            min-height: 90px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .display .operacao {
+            color: #8899aa;
+            font-size: 18px;
+            min-height: 24px;
+        }
+
+        .display .valor {
+            color: #e0e0e0;
+            font-size: 40px;
+            font-weight: bold;
+            word-break: break-all;
+        }
+
+        .botoes {
+            display: grid;
+            grid-template-columns: repeat(4, 75px);
+            gap: 12px;
+        }
+
+        button {
+            width: 75px;
+            height: 65px;
+            border: none;
+            border-radius: 12px;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        .btn-numero {
+            background: #1a1a40;
+            color: #e0e0e0;
+        }
+
+        .btn-numero:hover {
+            background: #2a2a50;
+        }
+
+        .btn-operacao {
+            background: #e94560;
+            color: white;
+        }
+
+        .btn-operacao:hover {
+            background: #ff6b81;
+        }
+
+        .btn-igual {
+            background: #533483;
+            color: white;
+            grid-column: span 2;
+            width: 100%;
+        }
+
+        .btn-igual:hover {
+            background: #6a45a0;
+        }
+
+        .btn-limpar {
+            background: #0f3460;
+            color: #e94560;
+            grid-column: span 2;
+            width: 100%;
+        }
+
+        .btn-limpar:hover {
+            background: #1a4a7a;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculadora">
+        <div class="display">
+            <div class="operacao" id="operacao"></div>
+            <div class="valor" id="display">0</div>
+        </div>
+        <div class="botoes">
+            <button class="btn-numero" onclick="digitar('7')">7</button>
+            <button class="btn-numero" onclick="digitar('8')">8</button>
+            <button class="btn-numero" onclick="digitar('9')">9</button>
+            <button class="btn-operacao" onclick="operacao('+')">+</button>
+
+            <button class="btn-numero" onclick="digitar('4')">4</button>
+            <button class="btn-numero" onclick="digitar('5')">5</button>
+            <button class="btn-numero" onclick="digitar('6')">6</button>
+            <button class="btn-operacao" onclick="operacao('-')">−</button>
+
+            <button class="btn-numero" onclick="digitar('1')">1</button>
+            <button class="btn-numero" onclick="digitar('2')">2</button>
+            <button class="btn-numero" onclick="digitar('3')">3</button>
+            <button class="btn-igual" onclick="calcular()" style="grid-row: span 2; height: 142px;">=</button>
+
+            <button class="btn-numero" onclick="digitar('0')">0</button>
+            <button class="btn-limpar" onclick="limpar()">C</button>
+        </div>
+    </div>
+
+    <script>
+        let valorAtual = '0';
+        let valorAnterior = null;
+        let operadorAtual = null;
+        let novaEntrada = true;
+
+        const display = document.getElementById('display');
+        const operacaoDisplay = document.getElementById('operacao');
+
+        function digitar(num) {
+            if (novaEntrada) {
+                valorAtual = num;
+                novaEntrada = false;
+            } else {
+                valorAtual = valorAtual === '0' ? num : valorAtual + num;
+            }
+            display.textContent = valorAtual;
+        }
+
+        function operacao(op) {
+            if (valorAnterior !== null && !novaEntrada) {
+                calcular();
+            }
+            valorAnterior = parseFloat(valorAtual);
+            operadorAtual = op;
+            operacaoDisplay.textContent = valorAtual + ' ' + op;
+            novaEntrada = true;
+        }
+
+        function calcular() {
+            if (valorAnterior === null || operadorAtual === null) return;
+
+            const atual = parseFloat(valorAtual);
+            let resultado;
+
+            if (operadorAtual === '+') {
+                resultado = valorAnterior + atual;
+            } else if (operadorAtual === '-') {
+                resultado = valorAnterior - atual;
+            }
+
+            operacaoDisplay.textContent = valorAnterior + ' ' + operadorAtual + ' ' + atual + ' =';
+            valorAtual = String(resultado);
+            display.textContent = valorAtual;
+            valorAnterior = null;
+            operadorAtual = null;
+            novaEntrada = true;
+        }
+
+        function limpar() {
+            valorAtual = '0';
+            valorAnterior = null;
+            operadorAtual = null;
+            novaEntrada = true;
+            display.textContent = '0';
+            operacaoDisplay.textContent = '';
+        }
+    </script>
+</body>
+</html>
